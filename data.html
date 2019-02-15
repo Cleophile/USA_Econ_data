@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>美国宏观经济数据</title>
+    <script src="http://echarts.baidu.com/dist/echarts.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+</head>
+<body>
+<!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+<h1>
+    美国宏观经济数据库——数据图表
+</h1>
+
+<p>
+    &copy;方正中期期货<br />
+    联系人：王天民 <a href="mailto:16307130090@fudan.edu.cn">16307130090@fudan.edu.cn</a>
+    </p>
+<h4>
+    使用方法：
+    </h4>
+<p>
+    单击下面的选择文件，选择由gen_dta.py生成的.json文件，图片即可自动生成。<br />
+    鼠标移动到坐标点可以显示数据详细信息。<br />
+    单击图片右上角的”保存“图标可以保存图片。
+    </p>
+
+<input type="file" id="files" name="files[]" multiple />
+<output id="list"></output>
+
+<!--注意：必须是All in One 的json-->
+
+    <h2>
+    1 国内生产总值: GDP
+</h2>
+
+<p> 更新频率：季度（每三个月） </p>
+<p> 更新时间：下一季度的第一个月发布上一个季度的估计值，第二、三个月发布修正值 </p>
+
+<h3>
+    1.1 近20年GDP季度数据
+</h3>
+<div id="gdp_all" style="width: 1200px;height:400px;"></div>
+
+<h3>
+    1.2 近10年GDP季度数据对比 (暂无)
+</h3>
+
+<h2>
+    2 就业和收入统计
+</h2>
+<p>
+    更新时间: 月度数据的更新时间为12号所在州的第五个工作日（从周日开始算一周）公布上一个月的调查结果
+    </p>
+<h3>
+    2.1.1 美国非农就业人口（过去10年月度数据对比）
+    </h3>
+    <div id="emp_compare" style="width: 1200px;height:400px;"></div>
+<h3>
+    2.1.2 美国非农就业人口（过去10年月度数据）
+</h3>
+<div id="emp_all" style="width: 1200px;height:400px;"></div>
+
+<h3>
+    2.2.1 非农就业人口平均时薪（过去10年月度数据对比）
+    </h3>
+<div id="sal_compare" style="width: 1200px;height:400px;"></div>
+
+<h3>
+    2.2.2 非农就业人口平均时薪（过去10年月度数据）
+</h3>
+<div id="sal_all" style="width: 1200px;height:400px;"></div>
+
+<h3>
+    2.3 薪金指数（季度数据）
+    </h3>
+<div id="sal_index" style="width: 1200px;height:400px;"></div>
+
+<h3>
+    2.4.1 失业率（过去15年季度数据）
+</h3>
+<div id="unemp_all" style="width: 1200px;height:400px;"></div>
+
+<h3>
+    2.4.2 U1-U6对比（暂无）
+</h3>
+
+<h3>
+    2.5 劳动参与率（过去15年季度数据）
+</h3>
+<div id="labor_all" style="width: 1200px;height:400px;"></div>
+
+<h3>
+    2.6.1 初次申请失业救济金人数（过去5年周度数据对比，暂无）
+</h3>
+
+<h3>
+    2.6.2 初次申请失业救济金人数（过去5年周度数据）
+</h3>
+<div id="first_unemp_all" style="width: 1200px;height:400px;"></div>
+
+<h3>
+    2.7.1 辞职率（离职率，过去10年月度数据对比）
+</h3>
+<div id="resg_compare" style="width: 1200px;height:400px;"></div>
+
+<h3>
+    2.7.2 辞职率（离职率，过去10年月度数据）
+</h3>
+<div id="resg_index" style="width: 1200px;height:400px;"></div>
+
+<h3>
+    2.8 新增（和新减）就业人数，过去10年月度数据
+</h3>
+<div id="emp_new" style="width: 1200px;height:400px;"></div>
+
+<h3>
+    2.9 职位空缺数（缺人数），过去10年月度数据
+</h3>
+<div id="emp_new" style="width: 1200px;height:400px;"></div>
+
+<h2>
+    3 个人消费统计
+</h2>
+
+<h3>
+
+</h3>
+
+<h2>
+    4 住房和建筑业
+</h2>
+
+<h2>
+    5 制造业和商业活动
+</h2>
+
+<h2>
+    6 价格水平和通货膨胀
+</h2>
+<h3>
+    6.1 CPI（过去10年月度数据）
+</h3>
+<div id="cpi_all" style="width: 1200px;height:400px;"></div>
+<h3>6.2 PCE（过去10年月度数据）</h3>
+<div id="PCE_all" style="width: 1200px;height:400px;"></div>
+<h3>6.2 PPI（过去10年月度数据）</h3>
+<div id="PCE_all" style="width: 1200px;height:400px;"></div>
+
+
+
+
+
+<script>
+    var gdp_Chart = echarts.init(document.getElementById("gdp_all"));
+    var date = new Date();
+    var this_year = date.getFullYear();
+    var year_gap = 20;
+    var points = year_gap*40;
+    var gdp_data;
+    var files = document.getElementById('files');
+
+    // 80个季度
+    var option = {
+            
+            tooltip: {
+                trigger: 'item'
+            },
+            legend: {
+                data: ['Real GDP of USA']
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            toolbox: {
+                feature: {
+                    saveAsImage: {}
+                }
+            },
+            xAxis: {
+                type: 'category',
+                name: "时间",
+                data:[]
+            },
+            yAxis: {
+                type: 'value',
+                name: 'GDP十亿美元'
+            },
+            series: [
+                {
+                    name: 'Real GDP of USA',
+                    type: 'line',
+                    stack: '总量',
+                    data: []
+                }]
+        };
+        gdp_Chart.setOption(option);
+
+        var emp_compare = echarts.init(document.getElementById("emp_compare"));
+        var emp_all = echarts.init(document.getElementById("emp_all")); 
+        var years = [];
+        for(var i=0;i<10;i++)
+        {
+            years.push(String(this_year-i));
+        }
+        option = {
+                tooltip: {
+                    trigger: 'item'
+                },
+                legend: {
+                    data: years
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                toolbox: {
+                    feature: {
+                        saveAsImage: {}
+                    }
+                },
+                xAxis: {
+                    type: 'category',
+                    name: "时间",
+                },
+                yAxis: {
+                    type: 'value',
+                    name: '千人'
+                },
+                series: []};
+/*************************************** 仅为占位符，后面的程序注意写x轴y轴的名称、单位距离等数据 *************************************************/
+        emp_compare.setOption(option);
+        emp_all.setOption(option);
+        var sal_all = echarts.init(document.getElementById("sal_all"));
+        sal_all.setOption(option);
+        var sal_compare = echarts.init(document.getElementById("sal_compare"));
+        sal_compare.setOption(option);
+        var sal_index = echarts.init(document.getElementById("sal_index"));
+        sal_index.setOption(option);
+
+
+        files.addEventListener("change", function () {
+                var reader = new FileReader();
+                reader.readAsText(files.files[1]);//发起异步请求
+                reader.onload = function () {
+                    //读取完成后，数据保存在对象的result属性中
+                    gdp_data = this.result;
+                    gdp_data = JSON.parse(gdp_data);
+/******************************************************** gdp_data是大数据 *******************************************************/
+                    var gdp = [];
+                    var date = [];
+                    for(var i in gdp_data['real_gdp'])
+                    {
+                        if(gdp_data['real_gdp'][i]==null)
+                            continue;
+                        gdp.push(gdp_data['real_gdp'][i]);
+                        var this_date = new Date(gdp_data['gdp_time'][i]);
+                        date.push(this_date.getFullYear() + '年' + (this_date.getMonth()+1) + '月');
+                    }
+                    
+                    var emp_time = []
+                    var emp_dta = []
+                    for(var i in gdp_data['emp_time'])
+                    {
+                        if(gdp_data['emp_time'][i]==null)
+                            continue;
+                        var this_date = new Date(gdp_data['emp_time'][i]);
+                        emp_time.push(this_date.getFullYear() + '年' + (this_date.getMonth() + 1) + '月');
+                        emp_dta.push(gdp_data['emp_people'][i])}
+
+                    var sal_index_time = new Array();
+                    var sal_index_data = new Array();
+                    for(var i in gdp_data['sal_index_time'])
+                    {
+                        if(gdp_data['sal_index_time'][i]==null)
+                            continue;
+                        sal_index_data.push(gdp_data['sal_index_data'][i]);
+                        sal_index_time.push(gdp_data['sal_index_time'][i]);
+                    }
+
+                    gdp_Chart.setOption({
+                        title: { text: "美国" + (this_year - year_gap) + "至" + this_year + "年实际GDP季度数据" },
+                        xAxis:{data: date.slice(gdp.length - 81, gdp.length - 1)},
+                        yAxis:{
+                            type:'value',
+                            scale: true,
+                            name: 'GDP十亿美元',
+                            axisTick: {
+                                show: true
+                            },
+                            splitNumber: 10 
+                        },
+                        series:[
+                           {name: 'Real GDP of USA',
+                            type: 'line',
+                            stack: '总量',
+                            data: gdp.slice(gdp.length - 81, gdp.length - 1)
+                           }]})
+
+                    emp_all.setOption({
+                            xAxis: {data: emp_time.slice(emp_dta.length - 121, emp_dta.length - 1)},
+                            yAxis: {
+                                type: 'value',
+                                scale: true,
+                                name: '千人',
+                                axisTick: {show: true},
+                                splitNumber: 10},
+                            series: [{
+                                    name: '就业人口',
+                                    type: 'line',
+                                    data: emp_dta.slice(emp_dta.length - 121, emp_dta.length - 1)
+                                }]})
+                    sal_index.setOption({
+                        xAxis:{data: sal_index_time},
+                        yAxis: {type: 'value',scale: true,axisTick: {show: true},splitNumber: 10,
+                        name:"薪金指数"
+                        },
+                        series: [{
+                            name: '就业人口',
+                            type: 'line',
+                            data: sal_index_data,
+                        }]})
+                            }
+/************************************************* SMALL READER BELOW ************************************************************/
+                var small_reader = new FileReader();
+                small_reader.readAsText(files.files[0]);//发起异步请求
+                small_reader.onload = function () {
+                //读取完成后，数据保存在对象的result属性中
+                var month_data = this.result;
+                month_data = JSON.parse(month_data);
+                var emp_lists = new Array();
+                for (var i = 0; i < 10; i++) {
+                    emp_lists.push([]);
+                }
+                // 从今年的开始
+                for(var i in month_data['emp_pm0'])
+                    emp_lists[0].push(month_data['emp_pm0'][i]);
+                for(var i in month_data['emp_pm1'])
+                    emp_lists[1].push(month_data['emp_pm1'][i]);
+                for(var i in month_data['emp_pm2'])
+                    emp_lists[2].push(month_data['emp_pm2'][i]);
+                for(var i in month_data['emp_pm3'])
+                    emp_lists[3].push(month_data['emp_pm3'][i]);
+                for(var i in month_data['emp_pm4'])
+                    emp_lists[4].push(month_data['emp_pm4'][i]);
+                for(var i in month_data['emp_pm5'])
+                    emp_lists[5].push(month_data['emp_pm5'][i]);
+                for(var i in month_data['emp_pm6'])
+                    emp_lists[6].push(month_data['emp_pm6'][i]);
+                for(var i in month_data['emp_pm7'])
+                    emp_lists[7].push(month_data['emp_pm7'][i]);
+                for(var i in month_data['emp_pm8'])
+                    emp_lists[8].push(month_data['emp_pm8'][i]);
+                for(var i in month_data['emp_pm9'])
+                    emp_lists[9].push(month_data['emp_pm9'][i]);
+
+                emp_compare.setOption(
+                    {
+                        title: {
+                            text: "美国" + years[9] + "至" + years[0] + "年非农就业"
+                        },
+                        tooltip: {
+                            trigger: 'axis'
+                        },
+                        xAxis:{
+                            data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+                            type: 'category',
+                            name: "时间"
+                        },
+                        yAxis: {
+                            type: 'value',
+                            scale: true,
+                            name: '千人',
+                            axisTick: {
+                                show: true
+                            },
+                            splitNumber: 10
+                        },
+                        legend:{
+                            data: years,
+                            show: true,
+                            orient: 'horizontal'
+                        },
+                        series:[
+                            {name: years[0], type: 'line', data: emp_lists[0]},
+                            {name: years[1], type: 'line', data: emp_lists[1]},
+                            {name: years[2], type: 'line', data: emp_lists[2]},
+                            {name: years[3], type: 'line', data: emp_lists[3]},
+                            {name: years[4], type: 'line', data: emp_lists[4]},
+                            {name: years[5], type: 'line', data: emp_lists[5]},
+                            {name: years[6], type: 'line', data: emp_lists[6]},
+                            {name: years[7], type: 'line', data: emp_lists[7]},
+                            {name: years[8], type: 'line', data: emp_lists[8]},
+                            {name: years[9], type: 'line', data: emp_lists[9]}
+                        ]}
+                )
+             }
+            }) // end of reader.onload, reader that reads big data
+
+            
+
+            // 小数据不小，大数据不大
+
+
+        
+</script>
+
+</body>
+</html>
