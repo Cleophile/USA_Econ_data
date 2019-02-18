@@ -24,8 +24,9 @@ while i>=0:
 
 sal_index_dta = pd.read_excel('usa_macro.xlsx', sheet_name="工资和薪金指数", header=7)
 sal_index_dta.columns = ['sal_index_time','sal_index_dta',1,1,1,1,1] # 可能需要改进
-
 # 60个数据点
+
+
 
 
 final_dict = {
