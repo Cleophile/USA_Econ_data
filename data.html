@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>美国宏观经济数据</title>
-    <script src="http://echarts.baidu.com/dist/echarts.js"></script>
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <!--<script src="http://echarts.baidu.com/dist/echarts.js"></script>-->
+    <!--脱机工作的时候用npm内置的echarts.js-->
+    <script src="echarts.js"></script>
+    <!--<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>-->
+    <!--jQuery Not Used-->
 
 </head>
 <body>
@@ -82,7 +85,7 @@
 <div id="sal_index" style="width: 1200px;height:400px;"></div>
 
 <h3>
-    2.4.1 失业率（过去15年季度数据）
+    2.4.1 失业率（过去10年月度数据）
 </h3>
 <div id="unemp_all" style="width: 1200px;height:400px;"></div>
 
@@ -91,7 +94,7 @@
 </h3>
 
 <h3>
-    2.5 劳动参与率（过去15年季度数据）
+    2.5 劳动参与率（过去10年月度数据）
 </h3>
 <div id="labor_all" style="width: 1200px;height:400px;"></div>
 
@@ -100,7 +103,7 @@
 </h3>
 
 <h3>
-    2.6.2 初次申请失业救济金人数（过去5年周度数据）
+    2.6.2 初次申请失业救济金人数（过去200个周度数据）
 </h3>
 <div id="first_unemp_all" style="width: 1200px;height:400px;"></div>
 
@@ -108,13 +111,13 @@
 <div id="resg_compare" style="width: 1200px;height:400px;"></div>
 
 <h3>2.7.2 辞职率（离职率，过去10年月度数据）</h3>
-<div id="resg_index" style="width: 1200px;height:400px;"></div>
+<div id="resg_all" style="width: 1200px;height:400px;"></div>
 
 <h3>2.8 新增（和新减）就业人数，过去10年月度数据</h3>
 <div id="emp_new" style="width: 1200px;height:400px;"></div>
 
 <h3>2.9 职位空缺数（缺人数），过去10年月度数据</h3>
-<div id="emp_new" style="width: 1200px;height:400px;"></div>
+<div id="vct_new" style="width: 1200px;height:400px;"></div>
 
 <h2>3 个人消费统计</h2>
 
