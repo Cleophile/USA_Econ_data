@@ -1,6 +1,9 @@
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
+import os
+
+if not os.path.exists("./json"):
+        os.mkdir("./json")
 
 print("美国宏观经济数据库:后台数据生成")
 print("正在运行")
