@@ -141,12 +141,12 @@ var manu_dura_prod_all = echarts.init(document.getElementById("manu_dura_prod_al
 manu_dura_prod_all.setOption(option);
 var manu_dura_own_all = echarts.init(document.getElementById("manu_dura_own_all"));
 manu_dura_own_all.setOption(option);
-var trade_compare = echarts.init(document.getElementById("trade_compare"));
-trade_compare.setOption(option);
-var trade_goods_compare = echarts.init(document.getElementById("trade_goods_compare"));
-trade_goods_compare.setOption(option);
-var trade_service_compare = echarts.init(document.getElementById("trade_service_compare"));
-trade_service_compare.setOption(option);
+var trade_compare_chart = echarts.init(document.getElementById("trade_compare"));
+trade_compare_chart.setOption(option);
+var trade_goods_compare_chart = echarts.init(document.getElementById("trade_goods_compare"));
+trade_goods_compare_chart.setOption(option);
+var trade_service_compare_chart = echarts.init(document.getElementById("trade_service_compare"));
+trade_service_compare_chart.setOption(option);
 var trade_all = echarts.init(document.getElementById("trade_all"));
 trade_all.setOption(option);
 var cpi_all = echarts.init(document.getElementById("cpi_all"));
@@ -714,6 +714,7 @@ files.addEventListener("change", function () {
     var small_reader = new FileReader();
     small_reader.readAsText(files.files[0]);//发起异步请求
     small_reader.onload = function () {
+        try{
         //读取完成后，数据保存在对象的result属性中
         var month_data = this.result;
         month_data = JSON.parse(month_data);
@@ -1076,7 +1077,7 @@ files.addEventListener("change", function () {
         for (var i in month_data['tr_ser8']) { trser_lists[8].push(month_data['tr_ser8'][i]); }
         for (var i in month_data['tr_ser9']) { trser_lists[9].push(month_data['tr_ser9'][i]); }
 
-        trade_compare.setOption({
+        trade_compare_chart.setOption({
             title: { text: years[9] + "至" + years[0] + "贸易差额" },
             tooltip: { trigger: 'axis' },
             xAxis: { data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'], type: 'category', name: "时间" },
@@ -1094,7 +1095,7 @@ files.addEventListener("change", function () {
                 { name: years[9], type: 'line', data: trade_lists[9] },
         ]});
 
-        trade_goods_compare.setOption({
+        trade_goods_compare_chart.setOption({
             title: { text: years[9] + "至" + years[0] + "商品贸易差额" },
             tooltip: { trigger: 'axis' },
             xAxis: { data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'], type: 'category', name: "时间" },
@@ -1111,7 +1112,7 @@ files.addEventListener("change", function () {
                 { name: years[8], type: 'line', data: trgoods_lists[8] },
                 { name: years[9], type: 'line', data: trgoods_lists[9] },
         ]});
-        trade_service_compare.setOption({
+        trade_service_compare_chart.setOption({
             title: { text: years[9] + "至" + years[0] + "服务贸易差额" },
             tooltip: { trigger: 'axis' },
             xAxis: { data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'], type: 'category', name: "时间" },
@@ -1396,9 +1397,10 @@ files.addEventListener("change", function () {
                 { name: years[8], type: "line", data: sal_lists[8] },
                 { name: years[9], type: "line", data: sal_lists[9] },
             ]})
-    }})// end of reader.onload, reader that reads big data
-
-
+        }catch(error){
+            document.write(error);
+        }
+    }}})// end of reader.onload, reader that reads big data
 
 
 
